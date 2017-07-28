@@ -24,10 +24,26 @@ player_img = pygame.image.load(path.join(img_dir, "Red_Guy.png")).convert()
 mob_img = pygame.image.load(path.join(img_dir, "Meteor.png")).convert()
 bullet_img = pygame.image.load(path.join(img_dir, "Laser.png")).convert()
 
+
+font_name = pygame.font.match_font("arial")
+def draw_text(surf, text, size, x, y):
+    font = pygame.font.Font(font_name, size)
+    text_surface = font.render(text, True, White)
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x, y)
+    surf.blit(text_surface, text_rect)
+    
+
+
+
+
+
+    
 class Player (pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image = player_img
+        self.image = pygame.transform.scale(player_img,(30, 30))
         self.rect = self.image.get_rect()
         self.rect.centerx = (WIDTH/2)
         self.rect.bottom = (HEIGHT-10)
@@ -55,7 +71,7 @@ class Mob(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = random.randrange(WIDTH - self.rect.width)
         self.rect.y = random.randrange(-100,-40)
-        self.speedy = random.randrange(4, 15)
+        self.speedy = random.randrange(4, 7)
         self.speedx = random.randrange(-3, 3)
     def update(self):
         self.rect.y += self.speedy
@@ -63,7 +79,7 @@ class Mob(pygame.sprite.Sprite):
         if self.rect.top > HEIGHT + 10 or self.rect.right < 0 or self.rect.left > WIDTH:
             self.rect.x = random.randrange(WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100,-40)
-            self.speedy = random.randrange(4, 15)
+            self.speedy = random.randrange(4, 7)
             self.speedx = random.randrange(-3, 3)
             
 class Bullet(pygame.sprite.Sprite):
@@ -88,6 +104,15 @@ for i in range(8):
     m = Mob()
     all_sprites.add(m)
     mobs.add(m)
+score = 0
+
+
+
+
+
+
+
+
 #game loop
 
 running = True
@@ -105,6 +130,7 @@ while running:
     
     hits = pygame.sprite.groupcollide(mobs, bullets, True,False)
     for hit in hits:
+        score += 100
         m = Mob()
         all_sprites.add(m)
         mobs.add(m)
@@ -116,6 +142,7 @@ while running:
     #reders
     screen.fill(Black)
     all_sprites.draw(screen)
+    draw_text(screen, str(score), 20, WIDTH/2, 10)
     #after drawing everything flip dispplay
     pygame.display.flip()
 
